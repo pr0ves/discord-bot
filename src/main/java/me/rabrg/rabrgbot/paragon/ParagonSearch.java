@@ -1,14 +1,16 @@
 package me.rabrg.rabrgbot.paragon;
 
+import java.util.ArrayList;
+
 public class ParagonSearch {
 
-    private final ParagonSearchData[] data;
+    private final ArrayList<ParagonSearchData> data;
 
-    ParagonSearch(ParagonSearchData[] data) {
+    ParagonSearch(ArrayList<ParagonSearchData> data) {
         this.data = data;
     }
 
-    public ParagonSearchData[] getData() {
+    public ArrayList<ParagonSearchData> getData() {
         return data;
     }
 }
