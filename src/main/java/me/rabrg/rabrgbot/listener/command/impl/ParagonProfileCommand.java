@@ -7,6 +7,8 @@ import me.rabrg.rabrgbot.paragon.ParagonMatch;
 import me.rabrg.rabrgbot.paragon.ParagonProfileData;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.time.LocalTime;
 
 public final class ParagonProfileCommand implements Command {
@@ -49,39 +51,29 @@ public final class ParagonProfileCommand implements Command {
                 String username = argsArray[1];
                 if (argsArray.length == 2) {
                     ParagonMatch match = bot.getParagonApi().getLastMatch(username);
+                    DecimalFormat df = new DecimalFormat("0.00");
                     final String[] response = {
-                            "Match ID: " + match.getId() + "\n" +
-                            "Started " + match.getCreatedAt() + " Length: " + LocalTime.ofSecondOfDay(match.getLenght()) + "\n" +
-                            (match.getWinningTeam() == 0 ? "Team One won.\n" : "Team Two won\n\n") +
-                            "Team One\n"};
-                    response[0] += "```diff\nName\tHero\tElo\tKills\tDeaths\tAssists\tKDA\tHero\tTower\tJungle\tMinion\tTotal\n\n";
-                    match.getTeams().get(0).forEach(h -> response[0] += h.getName() +
-                            "\t" + bot.getParagonApi().getParagonHeroFromCode(h.getHero()).getName() +
-                            "\t" + h.getElo() +
-                            "\t" + h.getKills() +
-                            "\t" + h.getDeaths() +
-                            "\t" + h.getAssists() +
-                            "\t" + ((h.getKills() + h.getAssists()) / (float) h.getDeaths()) +
-                            "\t" + formatDamage(h.getHeroDamage()) +
-                            "\t" + formatDamage(h.getTowerDamage()) +
-                            "\t" + formatDamage(h.getJungleDamage()) +
-                            "\t" + formatDamage(h.getMinionDamage()) +
-                            "\t" + formatDamage(h.getHeroDamage() + h.getTowerDamage() + h.getJungleDamage() + h.getMinionDamage()) + "|\n");
+                            "Match ID: " + match.getId() + "\n" +" Length: " + formatSeconds(match.getLenght()) + "\n\n" +
+                                    (match.getWinningTeam() == 0 ? "Team One won.\n\n" : "Team Two won.\n\n") +
+                                    "Team One\n"};
+                    response[0] += "```diff\n";
+                    match.getTeams().get(0).forEach(h -> response[0] += h.getName() + " " + h.getElo() +
+                            "\n" + bot.getParagonApi().getParagonHeroFromCode(h.getHero()).getName() +
+                            " " + h.getKills() +
+                            "/" + h.getDeaths() +
+                            "/" + h.getAssists() +
+                            " KDA: " + df.format((h.getKills() + h.getAssists()) / (float) h.getDeaths()) +
+                            " " + formatDamage(h.getHeroDamage() + h.getTowerDamage() + h.getJungleDamage() + h.getMinionDamage()) + " dmg\n\n");
 
-                    response[0] += "```Team Two\n" +
-                            "```diff\nName\tHero\tElo\tKills\tDeaths\tAssists\tKDA\tHero\tTower\tJungle\tMinion\tTotal\n\n";
-                    match.getTeams().get(1).forEach(h -> response[0] += h.getName() +
-                            "\t" + bot.getParagonApi().getParagonHeroFromCode(h.getHero()).getName() +
-                            "\t" + h.getElo() +
-                            "\t" + h.getKills() +
-                            "\t" + h.getDeaths() +
-                            "\t" + h.getAssists() +
-                            "\t" + ((h.getKills() + h.getAssists()) / (float) h.getDeaths()) +
-                            "\t" + formatDamage(h.getHeroDamage()) +
-                            "\t" + formatDamage(h.getTowerDamage()) +
-                            "\t" + formatDamage(h.getJungleDamage()) +
-                            "\t" + formatDamage(h.getMinionDamage()) +
-                            "\t" + formatDamage(h.getHeroDamage() + h.getTowerDamage() + h.getJungleDamage() + h.getMinionDamage()) + "|\n");
+                    response[0] += "```\nTeam Two\n" +
+                            "```diff\n";
+                    match.getTeams().get(1).forEach(h -> response[0] += h.getName() + " " + h.getElo() +
+                            "\n" + bot.getParagonApi().getParagonHeroFromCode(h.getHero()).getName() +
+                            " " + h.getKills() +
+                            "/" + h.getDeaths() +
+                            "/" + h.getAssists() +
+                            " KDA: " + df.format((h.getKills() + h.getAssists()) / (float) h.getDeaths()) +
+                            " " + formatDamage(h.getHeroDamage() + h.getTowerDamage() + h.getJungleDamage() + h.getMinionDamage()) + " dmg\n\n");
                     response[0] += "```\n";
                     bot.sendMessage(event.getChannel(), response[0]);
                 } else {
@@ -100,5 +92,23 @@ public final class ParagonProfileCommand implements Command {
             s += damage;
         }
         return s;
+    }
+
+    private String formatSeconds(int secs) {
+        String time = "";
+        if (secs / 3600 >= 1) {
+            time += secs / 3600 + ":";
+            int tmp = (secs / 3600);
+            secs -= tmp * 3600;
+        }
+        if (secs / 60 >= 1) {
+            time += String.format("%02d", secs / 60) + ":";
+            int tmp = (secs / 60);
+            secs -= tmp * 60;
+        } else {
+            time += "00:";
+        }
+        time += secs;
+        return time;
     }
 }
