@@ -3,8 +3,6 @@ package me.rabrg.rabrgbot.paragon;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import static jdk.nashorn.internal.objects.NativeMath.round;
-
 public final class ParagonProfileData {
 
     private final int id;

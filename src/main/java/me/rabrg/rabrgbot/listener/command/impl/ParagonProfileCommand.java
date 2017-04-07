@@ -2,14 +2,11 @@ package me.rabrg.rabrgbot.listener.command.impl;
 
 import me.rabrg.rabrgbot.RabrgBot;
 import me.rabrg.rabrgbot.listener.command.Command;
-import me.rabrg.rabrgbot.paragon.ParagonHeroes;
 import me.rabrg.rabrgbot.paragon.ParagonMatch;
 import me.rabrg.rabrgbot.paragon.ParagonProfileData;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 import java.text.DecimalFormat;
-import java.text.Format;
-import java.time.LocalTime;
 
 public final class ParagonProfileCommand implements Command {
 
