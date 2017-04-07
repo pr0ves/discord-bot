@@ -42,11 +42,11 @@ public final class ParagonProfileData {
                 DecimalFormat df = new DecimalFormat("0.00");
                 String elo = df.format(stats.getElo());
                 String percentile = df.format(stats.getPercentile());
-                String winloss = df.format((((double) stats.getWins()) / stats.getGamesPlayed())*100);
+                String winloss = df.format((((double) stats.getWins()) / stats.getGamesPlayed()) * 100);
                 String kda = df.format((((double) stats.getKills() + stats.getAssists()) / stats.getDeaths()));
                 return "Username: " + name + "\n"
                         + "Elo: " + elo + "\n"
-                        + "Percentile: " + percentile + "\n"
+                        + "Rank: " + stats.getRank() + " (Top " + percentile + "%)\n"
                         + "Wins: " + stats.getWins() + "\n"
                         + "Losses: " + (stats.getGamesPlayed() - stats.getWins()) + "\n"
                         + "Win/loss: " + winloss + "\n"

@@ -11,9 +11,7 @@ public final class ParagonApi {
 
     public ParagonProfileData getProfileData(final String username) {
         String response = JsonUtil.getJsonResponse(BASE_ENDPOINT + "search/" + username);
-        response = response.replace("[", "");
-        response = response.replace("]", "");
         ParagonSearch search = gson.fromJson(response, ParagonSearch.class);
-        return gson.fromJson(JsonUtil.getJsonResponse(BASE_ENDPOINT + search.getData().getId()), ParagonProfile.class).getData();
+        return gson.fromJson(JsonUtil.getJsonResponse(BASE_ENDPOINT + search.getData()[0].getId()), ParagonProfile.class).getData();
     }
 }
